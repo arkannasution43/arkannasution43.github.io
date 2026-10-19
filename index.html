@@ -418,6 +418,7 @@
               <h1 id="fullName">Nama Anda</h1>
               <p class="headline" id="headline">Pelajar | Tertarik pada teknologi dan desain</p>
               <p class="location"><span id="location">Indonesia</span> · <a href="#kontak">Info kontak</a></p>
+              <p class="location"><span>Tanggal lahir: </span><span class="contact-empty" id="birthDateEmpty">Belum ditambahkan</span><span id="birthDate" hidden></span></p>
               <div class="profile-actions">
                 <button class="button primary" type="button" id="editProfile">Edit profil</button>
               </div>
@@ -451,6 +452,11 @@
               <span class="contact-label">Status pendidikan</span>
               <span class="contact-empty" id="schoolDetailEmpty">Belum ditambahkan</span>
               <span class="contact-value" id="schoolDetail" hidden></span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">NRP / NIM</span>
+              <span class="contact-empty" id="studentIdEmpty">Belum ditambahkan</span>
+              <span class="contact-value" id="studentId" hidden></span>
             </div>
           </div>
         </div>
@@ -554,9 +560,11 @@
       name: "Nama Anda",
       headline: "Pelajar | Tertarik pada teknologi dan desain",
       location: "Indonesia",
+      birthDate: "",
       about: "Tuliskan cerita singkat tentang diri Anda, hal yang sedang dipelajari, dan bidang yang ingin Anda tekuni.",
       schoolName: "",
       schoolDetail: "",
+      studentId: "",
       skills: "Komunikasi, Kerja sama, Kreativitas",
       email: "",
       phone: "",
@@ -566,11 +574,13 @@
       profile: [
         ["name", "Nama lengkap", "text"],
         ["headline", "Judul profil", "text"],
-        ["location", "Lokasi", "text"]
+        ["location", "Lokasi", "text"],
+        ["birthDate", "Tanggal lahir", "date"]
       ],
       education: [
         ["schoolDetail", "Status pendidikan", "text"],
-        ["schoolName", "Institusi", "text"]
+        ["schoolName", "Institusi", "text"],
+        ["studentId", "NRP / NIM", "text"]
       ],
       about: [["about", "Tentang diri Anda", "textarea"]],
       skills: [["skills", "Keahlian (pisahkan dengan koma)", "textarea"]],
@@ -614,8 +624,10 @@
       document.getElementById("headline").textContent = profile.headline;
       document.getElementById("location").textContent = profile.location;
       document.getElementById("aboutText").textContent = profile.about;
+      renderProfileValue("birthDate", formatBirthDate(profile.birthDate));
       renderProfileValue("schoolName", profile.schoolName);
       renderProfileValue("schoolDetail", profile.schoolDetail);
+      renderProfileValue("studentId", profile.studentId);
       renderContact("email", profile.email, "mailto:");
       renderContact("phone", profile.phone, "tel:");
       const avatar = document.getElementById("avatar");
@@ -660,6 +672,16 @@
       display.hidden = !hasValue;
       empty.hidden = hasValue;
       display.textContent = value;
+    }
+
+    function formatBirthDate(value) {
+      if (!value) return "";
+      const [year, month, day] = value.split("-").map(Number);
+      return new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }).format(new Date(year, month - 1, day));
     }
 
     function openEditor(section) {
