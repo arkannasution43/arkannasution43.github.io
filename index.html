@@ -454,6 +454,11 @@
               <span class="contact-value" id="schoolDetail" hidden></span>
             </div>
             <div class="contact-item">
+              <span class="contact-label">Jurusan</span>
+              <span class="contact-empty" id="majorEmpty">Belum ditambahkan</span>
+              <span class="contact-value" id="major" hidden></span>
+            </div>
+            <div class="contact-item">
               <span class="contact-label">NRP / NIM</span>
               <span class="contact-empty" id="studentIdEmpty">Belum ditambahkan</span>
               <span class="contact-value" id="studentId" hidden></span>
@@ -564,6 +569,7 @@
       about: "Tuliskan cerita singkat tentang diri Anda, hal yang sedang dipelajari, dan bidang yang ingin Anda tekuni.",
       schoolName: "",
       schoolDetail: "",
+      major: "",
       studentId: "",
       skills: "Komunikasi, Kerja sama, Kreativitas",
       email: "",
@@ -580,6 +586,7 @@
       education: [
         ["schoolDetail", "Status pendidikan", "text"],
         ["schoolName", "Institusi", "text"],
+        ["major", "Jurusan", "text"],
         ["studentId", "NRP / NIM", "text"]
       ],
       about: [["about", "Tentang diri Anda", "textarea"]],
@@ -627,6 +634,7 @@
       renderProfileValue("birthDate", formatBirthDate(profile.birthDate));
       renderProfileValue("schoolName", profile.schoolName);
       renderProfileValue("schoolDetail", profile.schoolDetail);
+      renderProfileValue("major", profile.major);
       renderProfileValue("studentId", profile.studentId);
       renderContact("email", profile.email, "mailto:");
       renderContact("phone", profile.phone, "tel:");
