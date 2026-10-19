@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f3f2ef">
+  <title>Profil Profesional</title>
+  <style>
+    :root {
+      --ink: #1d2226;
+      --muted: #666;
+      --line: #e5e3df;
+      --paper: #fff;
+      --canvas: #f3f2ef;
+      --blue: #0a66c2;
+      --blue-dark: #004182;
+      --green: #057642;
+      --shadow: 0 1px 2px #00000012;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 15px/1.5 Arial, Helvetica, sans-serif;
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .topbar {
+      position: sticky;
+      z-index: 5;
+      top: 0;
+      height: 62px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner {
+      width: min(1128px, calc(100% - 36px));
+      height: 100%;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -.8px;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 27px;
+      height: 27px;
+      display: grid;
+      place-items: center;
+      border-radius: 5px;
+      color: white;
+      background: var(--blue);
+      font-size: 18px;
+      letter-spacing: -1px;
+    }
+    .search {
+      width: 280px;
+      padding: 9px 12px;
+      border: 0;
+      border-radius: 5px;
+      outline: none;
+      background: #edf3f8;
+    }
+    .nav-items {
+      display: flex;
+      align-items: stretch;
+      gap: 25px;
+      height: 100%;
+      margin-left: auto;
+    }
+    .nav-item {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 1px;
+      color: #666;
+      font-size: 11px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-item .nav-icon { font-size: 18px; line-height: 1.1; }
+    .nav-item.active { color: var(--ink); border-bottom: 2px solid var(--ink); }
+
+    .layout {
+      width: min(1128px, calc(100% - 36px));
+      margin: 24px auto 48px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 22px;
+      align-items: start;
+    }
+    .main-column, .side-column { display: grid; gap: 10px; }
+    .card {
+      overflow: hidden;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      box-shadow: var(--shadow);
+    }
+    .profile-card { position: relative; }
+    .cover {
+      height: 190px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 82% 15%, #ffffff70 0 3%, transparent 3.5%),
+        radial-gradient(ellipse at 85% 18%, #ffffff30 0 12%, transparent 12.5%),
+        linear-gradient(118deg, #9dc9c1 0%, #c8ded1 43%, #e8d7b8 100%);
+    }
+    .cover::before, .cover::after {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border: 1px solid #ffffff55;
+      border-radius: 50%;
+      right: -75px;
+      top: 35px;
+    }
+    .cover::after {
+      width: 260px;
+      height: 260px;
+      right: 7px;
+      top: 83px;
+    }
+    .profile-content { padding: 0 26px 22px; }
+    .avatar-wrap {
+      position: relative;
+      width: 146px;
+      height: 146px;
+      margin-top: -76px;
+      margin-bottom: 15px;
+      z-index: 1;
+    }
+    .avatar {
+      width: 146px;
+      height: 146px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 5px solid white;
+      border-radius: 50%;
+      background: #dce9e5;
+      color: #446b63;
+      font-size: 46px;
+      font-weight: 700;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .upload-button {
+      position: absolute;
+      right: -1px;
+      bottom: 4px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d0d0d0;
+      border-radius: 50%;
+      color: var(--blue);
+      background: white;
+      font-size: 17px;
+    }
+    .upload-button:hover { background: #eef6fc; }
+    #photoInput { display: none; }
+    .profile-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    h1 { margin: 0 0 3px; font-size: 26px; line-height: 1.25; }
+    .headline { margin: 0; font-size: 16px; }
+    .location {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .location a, .text-link { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .location a:hover, .text-link:hover { text-decoration: underline; }
+    .edit-icon {
+      flex: 0 0 auto;
+      padding: 9px 11px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #666;
+      font-size: 19px;
+    }
+    .edit-icon:hover { background: #f3f2ef; }
+    .profile-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+    .button {
+      min-height: 36px;
+      padding: 7px 17px;
+      border: 1px solid var(--blue);
+      border-radius: 20px;
+      color: var(--blue);
+      background: white;
+      font-weight: 700;
+    }
+    .button.primary { color: white; background: var(--blue); }
+    .button.primary:hover { background: var(--blue-dark); }
+    .button:hover { box-shadow: inset 0 0 0 1px var(--blue); background: #eef6fc; }
+    .button.primary:hover { background: var(--blue-dark); }
+
+    .section-card { padding: 20px 24px; }
+    .section-title-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    h2 { margin: 0; font-size: 20px; line-height: 1.3; }
+    .section-card p { margin: 12px 0 0; white-space: pre-line; }
+    .section-edit {
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #666;
+      font-size: 18px;
+      width: 35px;
+      height: 35px;
+    }
+    .section-edit:hover { background: #f3f2ef; }
+    .feature-row {
+      display: flex;
+      gap: 14px;
+      padding-top: 17px;
+    }
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: #eef3f8;
+      font-size: 20px;
+    }
+    .skills-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .skill {
+      padding: 6px 12px;
+      border: 1px solid #c8c6c2;
+      border-radius: 16px;
+      color: #414141;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .side-card { padding: 18px; }
+    .side-card h2 { font-size: 17px; }
+    .side-card p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .contact-list { display: grid; gap: 13px; margin-top: 13px; }
+    .contact-item { display: grid; gap: 2px; min-width: 0; }
+    .contact-label { color: var(--muted); font-size: 12px; }
+    .contact-value {
+      overflow-wrap: anywhere;
+      color: var(--blue);
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .contact-value:hover { text-decoration: underline; }
+    .contact-empty { color: var(--muted); font-size: 14px; }
+    .side-divider { margin: 15px 0; border: 0; border-top: 1px solid var(--line); }
+    .side-link {
+      display: block;
+      margin-top: 11px;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .side-link:hover { text-decoration: underline; }
+    .profile-tip {
+      padding: 17px;
+      border-radius: 8px;
+      color: #234b38;
+      background: #e7f3e9;
+    }
+    .profile-tip strong { display: block; font-size: 15px; }
+    .profile-tip p { margin: 5px 0 0; font-size: 13px; }
+    .footer { padding: 8px 6px; color: #777; text-align: center; font-size: 12px; }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: #0008;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      width: min(560px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 22px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 12px 36px #0003;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-header button {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      font-size: 22px;
+    }
+    .modal-header button:hover { background: #f3f2ef; }
+    .crop-dialog { width: min(520px, 100%); }
+    .crop-content { display: grid; justify-items: center; gap: 20px; }
+    .crop-preview {
+      width: min(280px, 70vw);
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 4px solid #e8e6e1;
+      border-radius: 50%;
+      background: #f3f2ef;
+    }
+    .crop-preview canvas { display: block; width: 100%; height: 100%; }
+    .crop-controls { width: 100%; display: grid; gap: 12px; }
+    .crop-control { display: grid; gap: 5px; }
+    .crop-control label { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 700; }
+    .crop-control input { width: 100%; accent-color: var(--blue); }
+    .field { display: grid; gap: 5px; margin: 13px 0; }
+    .field label { font-size: 13px; font-weight: 700; }
+    .field input, .field textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #999;
+      border-radius: 5px;
+      color: var(--ink);
+      background: white;
+    }
+    .field textarea { min-height: 105px; resize: vertical; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    .notice {
+      position: fixed;
+      z-index: 20;
+      right: 20px;
+      bottom: 20px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: white;
+      background: #1d2226;
+      box-shadow: 0 4px 16px #0003;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: .2s ease;
+    }
+    .notice.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; max-width: 700px; }
+      .side-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .side-column .footer { grid-column: 1 / -1; }
+      .nav-items { gap: 15px; }
+      .nav-item span:last-child { display: none; }
+    }
+    @media (max-width: 560px) {
+      .topbar { height: 56px; }
+      .topbar-inner { width: calc(100% - 22px); gap: 12px; }
+      .brand { font-size: 0; }
+      .brand-mark { font-size: 18px; }
+      .search { width: 100%; }
+      .nav-items { gap: 12px; }
+      .nav-item .nav-icon { font-size: 16px; }
+      .layout { width: calc(100% - 20px); margin-top: 12px; gap: 10px; }
+      .cover { height: 145px; }
+      .profile-content { padding: 0 17px 18px; }
+      .avatar-wrap, .avatar { width: 118px; height: 118px; }
+      .avatar-wrap { margin-top: -61px; }
+      .avatar { font-size: 38px; }
+      h1 { font-size: 23px; }
+      .section-card { padding: 18px; }
+      .side-column { grid-template-columns: 1fr; }
+      .side-column .footer { grid-column: auto; }
+      .crop-dialog { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-mark">in</span> Jaringan</div>
+      <input class="search" type="search" placeholder="Cari">
+      <nav class="nav-items" aria-label="Navigasi utama">
+        <a class="nav-item" href="#beranda"><span class="nav-icon">⌂</span><span>Beranda</span></a>
+        <a class="nav-item" href="#jaringan"><span class="nav-icon">♧</span><span>Jaringan</span></a>
+        <a class="nav-item" href="#pekerjaan"><span class="nav-icon">▣</span><span>Pekerjaan</span></a>
+        <a class="nav-item active" href="#profil"><span class="nav-icon">♙</span><span>Profil</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="layout" id="profil">
+    <div class="main-column">
+      <section class="card profile-card" aria-label="Profil diri">
+        <div class="cover"></div>
+        <div class="profile-content">
+          <div class="avatar-wrap">
+            <div class="avatar" id="avatar" aria-label="Foto profil">A</div>
+            <button class="upload-button" id="uploadButton" type="button" aria-label="Tambahkan foto profil" title="Tambahkan foto profil">＋</button>
+            <input id="photoInput" type="file" accept="image/*">
+          </div>
+          <div class="profile-heading">
+            <div>
+              <h1 id="fullName">Nama Anda</h1>
+              <p class="headline" id="headline">Pelajar | Tertarik pada teknologi dan desain</p>
+              <p class="location"><span id="location">Indonesia</span> · <a href="#kontak">Info kontak</a></p>
+              <div class="profile-actions">
+                <button class="button primary" type="button" id="editProfile">Edit profil</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section-card">
+        <div class="section-title-row">
+          <h2>Tentang</h2>
+          <button class="section-edit" type="button" data-edit="about" aria-label="Edit tentang" title="Edit tentang">✎</button>
+        </div>
+        <p id="aboutText">Tuliskan cerita singkat tentang diri Anda, hal yang sedang dipelajari, dan bidang yang ingin Anda tekuni.</p>
+      </section>
+
+      <section class="card section-card">
+        <div class="section-title-row">
+          <h2>Pendidikan</h2>
+          <button class="section-edit" type="button" data-edit="education" aria-label="Edit pendidikan" title="Edit pendidikan">✎</button>
+        </div>
+        <div class="feature-row">
+          <div class="feature-icon">▤</div>
+          <div class="contact-list">
+            <div class="contact-item">
+              <span class="contact-label">Institusi</span>
+              <span class="contact-empty" id="schoolNameEmpty">Belum ditambahkan</span>
+              <span class="contact-value" id="schoolName" hidden></span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Status pendidikan</span>
+              <span class="contact-empty" id="schoolDetailEmpty">Belum ditambahkan</span>
+              <span class="contact-value" id="schoolDetail" hidden></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section-card" id="kontak">
+        <div class="section-title-row">
+          <h2>Info kontak</h2>
+          <button class="section-edit" type="button" data-edit="contact" aria-label="Edit info kontak" title="Edit info kontak">✎</button>
+        </div>
+        <div class="contact-list">
+          <div class="contact-item">
+            <span class="contact-label">Email</span>
+            <span class="contact-empty" id="emailEmpty">Belum ditambahkan</span>
+            <a class="contact-value" id="emailValue" hidden></a>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Nomor telepon</span>
+            <span class="contact-empty" id="phoneEmpty">Belum ditambahkan</span>
+            <a class="contact-value" id="phoneValue" hidden></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section-card">
+        <div class="section-title-row">
+          <h2>Keahlian</h2>
+          <button class="section-edit" type="button" data-edit="skills" aria-label="Edit keahlian" title="Edit keahlian">✎</button>
+        </div>
+        <div class="skills-list" id="skillsList"></div>
+      </section>
+    </div>
+
+    <aside class="side-column">
+      <section class="card side-card">
+        <h2>Bahasa profil</h2>
+        <p>Indonesia</p>
+        <hr class="side-divider">
+        <h2>Profil publik &amp; URL</h2>
+        <p>Tambahkan informasi yang membuat profil Anda mudah ditemukan.</p>
+        <a class="side-link" href="#profil">Lihat profil Anda</a>
+      </section>
+      <div class="profile-tip">
+        <strong>Profil yang lengkap lebih menarik!</strong>
+        <p>Tambahkan foto dan ceritakan sedikit tentang diri Anda untuk membuat profil ini terasa lebih personal.</p>
+      </div>
+      <div class="footer">Tentang · Bantuan · Privasi &nbsp; © 2026</div>
+    </aside>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle">Edit profil</h2>
+        <button type="button" id="closeModal" aria-label="Tutup">×</button>
+      </div>
+      <form id="profileForm">
+        <div id="formFields"></div>
+        <div class="modal-actions">
+          <button class="button" type="button" id="cancelModal">Batal</button>
+          <button class="button primary" type="submit">Simpan</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="cropBackdrop" role="presentation">
+    <section class="modal crop-dialog" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+      <div class="modal-header">
+        <h2 id="cropTitle">Sesuaikan foto profil</h2>
+        <button type="button" id="closeCrop" aria-label="Tutup">×</button>
+      </div>
+      <div class="crop-content">
+        <div class="crop-preview">
+          <canvas id="cropCanvas" width="512" height="512" aria-label="Pratinjau foto profil"></canvas>
+        </div>
+        <div class="crop-controls">
+          <div class="crop-control">
+            <label for="cropZoom"><span>Perbesar</span><span id="cropZoomValue">1×</span></label>
+            <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1">
+          </div>
+          <div class="crop-control">
+            <label for="cropHorizontal">Geser horizontal</label>
+            <input id="cropHorizontal" type="range" min="-100" max="100" step="1" value="0">
+          </div>
+          <div class="crop-control">
+            <label for="cropVertical">Geser vertikal</label>
+            <input id="cropVertical" type="range" min="-100" max="100" step="1" value="0">
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="button" type="button" id="cancelCrop">Batal</button>
+        <button class="button primary" type="button" id="saveCrop">Gunakan foto</button>
+      </div>
+    </section>
+  </div>
+  <div class="notice" id="notice" role="status"></div>
+
+  <script>
+    const defaults = {
+      name: "Nama Anda",
+      headline: "Pelajar | Tertarik pada teknologi dan desain",
+      location: "Indonesia",
+      about: "Tuliskan cerita singkat tentang diri Anda, hal yang sedang dipelajari, dan bidang yang ingin Anda tekuni.",
+      schoolName: "",
+      schoolDetail: "",
+      skills: "Komunikasi, Kerja sama, Kreativitas",
+      email: "",
+      phone: "",
+      photo: ""
+    };
+    const fields = {
+      profile: [
+        ["name", "Nama lengkap", "text"],
+        ["headline", "Judul profil", "text"],
+        ["location", "Lokasi", "text"]
+      ],
+      education: [
+        ["schoolDetail", "Status pendidikan", "text"],
+        ["schoolName", "Institusi", "text"]
+      ],
+      about: [["about", "Tentang diri Anda", "textarea"]],
+      skills: [["skills", "Keahlian (pisahkan dengan koma)", "textarea"]],
+      contact: [
+        ["email", "Email", "email"],
+        ["phone", "Nomor telepon", "tel"]
+      ]
+    };
+    let profile = loadProfile();
+    let activeSection = "profile";
+    let noticeTimer;
+    let pendingPhoto = null;
+
+    function loadProfile() {
+      try {
+        const saved = localStorage.getItem("jaringan-profile");
+        if (!saved) return { ...defaults };
+        const loadedProfile = { ...defaults, ...JSON.parse(saved) };
+        if (loadedProfile.schoolName === "Nama sekolah atau universitas") loadedProfile.schoolName = "";
+        if (loadedProfile.schoolDetail === "Pendidikan") loadedProfile.schoolDetail = "";
+        return loadedProfile;
+      } catch (error) {
+        console.error("Profil tersimpan tidak dapat dibaca:", error);
+        return { ...defaults };
+      }
+    }
+
+    function saveProfile() {
+      try {
+        localStorage.setItem("jaringan-profile", JSON.stringify(profile));
+      } catch (error) {
+        console.error("Profil tidak dapat disimpan:", error);
+        showNotice("Profil tidak dapat disimpan. Coba gunakan foto yang lebih kecil.");
+        return false;
+      }
+      return true;
+    }
+
+    function renderProfile() {
+      document.getElementById("fullName").textContent = profile.name;
+      document.getElementById("headline").textContent = profile.headline;
+      document.getElementById("location").textContent = profile.location;
+      document.getElementById("aboutText").textContent = profile.about;
+      renderProfileValue("schoolName", profile.schoolName);
+      renderProfileValue("schoolDetail", profile.schoolDetail);
+      renderContact("email", profile.email, "mailto:");
+      renderContact("phone", profile.phone, "tel:");
+      const avatar = document.getElementById("avatar");
+      avatar.replaceChildren();
+      if (profile.photo) {
+        const image = document.createElement("img");
+        image.src = profile.photo;
+        image.alt = "Foto profil " + profile.name;
+        avatar.append(image);
+      } else {
+        avatar.textContent = profile.name.trim().charAt(0).toUpperCase() || "A";
+      }
+      const skills = profile.skills.split(",").map(skill => skill.trim()).filter(Boolean);
+      const skillsList = document.getElementById("skillsList");
+      skillsList.replaceChildren();
+      skills.forEach(skill => {
+        const tag = document.createElement("span");
+        tag.className = "skill";
+        tag.textContent = skill;
+        skillsList.append(tag);
+      });
+    }
+
+    function renderContact(type, value, protocol) {
+      const link = document.getElementById(type + "Value");
+      const empty = document.getElementById(type + "Empty");
+      const hasValue = Boolean(value.trim());
+      link.hidden = !hasValue;
+      empty.hidden = hasValue;
+      if (hasValue) {
+        link.textContent = value;
+        link.href = protocol + value.replace(/\s/g, "");
+      } else {
+        link.removeAttribute("href");
+      }
+    }
+
+    function renderProfileValue(field, value) {
+      const display = document.getElementById(field);
+      const empty = document.getElementById(field + "Empty");
+      const hasValue = Boolean(value.trim());
+      display.hidden = !hasValue;
+      empty.hidden = hasValue;
+      display.textContent = value;
+    }
+
+    function openEditor(section) {
+      activeSection = section;
+      const titles = {
+        profile: "Edit profil",
+        education: "Edit pendidikan",
+        about: "Edit tentang",
+        skills: "Edit keahlian",
+        contact: "Info kontak"
+      };
+      document.getElementById("modalTitle").textContent = titles[section];
+      const container = document.getElementById("formFields");
+      container.replaceChildren();
+      fields[section].forEach(([key, label, type]) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "field";
+        const labelElement = document.createElement("label");
+        labelElement.htmlFor = "field-" + key;
+        labelElement.textContent = label;
+        const input = document.createElement(type === "textarea" ? "textarea" : "input");
+        input.id = "field-" + key;
+        input.name = key;
+        if (type !== "textarea") input.type = type;
+        input.value = profile[key];
+        wrapper.append(labelElement, input);
+        container.append(wrapper);
+      });
+      document.getElementById("modalBackdrop").classList.add("open");
+      container.querySelector("input, textarea").focus();
+    }
+
+    function closeEditor() {
+      document.getElementById("modalBackdrop").classList.remove("open");
+    }
+
+    function showNotice(message) {
+      const notice = document.getElementById("notice");
+      notice.textContent = message;
+      notice.classList.add("show");
+      clearTimeout(noticeTimer);
+      noticeTimer = setTimeout(() => notice.classList.remove("show"), 2600);
+    }
+
+    function drawCropPreview() {
+      if (!pendingPhoto) return;
+      const canvas = document.getElementById("cropCanvas");
+      const context = canvas.getContext("2d");
+      const zoom = Number(document.getElementById("cropZoom").value);
+      const horizontal = Number(document.getElementById("cropHorizontal").value) / 100;
+      const vertical = Number(document.getElementById("cropVertical").value) / 100;
+      const cropSize = Math.min(pendingPhoto.naturalWidth, pendingPhoto.naturalHeight) / zoom;
+      const maxX = pendingPhoto.naturalWidth - cropSize;
+      const maxY = pendingPhoto.naturalHeight - cropSize;
+      const sourceX = maxX / 2 + maxX / 2 * horizontal;
+      const sourceY = maxY / 2 + maxY / 2 * vertical;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(pendingPhoto, sourceX, sourceY, cropSize, cropSize, 0, 0, canvas.width, canvas.height);
+      document.getElementById("cropZoomValue").textContent = zoom.toFixed(1).replace(/\.0$/, "") + "×";
+    }
+
+    function closeCropEditor() {
+      document.getElementById("cropBackdrop").classList.remove("open");
+      pendingPhoto = null;
+    }
+
+    document.getElementById("editProfile").addEventListener("click", () => openEditor("profile"));
+    document.querySelectorAll("[data-edit]").forEach(button => {
+      button.addEventListener("click", () => openEditor(button.dataset.edit));
+    });
+    document.getElementById("uploadButton").addEventListener("click", () => {
+      document.getElementById("photoInput").click();
+    });
+    document.getElementById("photoInput").addEventListener("change", event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showNotice("Pilih file gambar untuk foto profil.");
+        event.target.value = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        const image = new Image();
+        image.addEventListener("load", () => {
+          pendingPhoto = image;
+          document.getElementById("cropZoom").value = "1";
+          document.getElementById("cropHorizontal").value = "0";
+          document.getElementById("cropVertical").value = "0";
+          document.getElementById("cropBackdrop").classList.add("open");
+          drawCropPreview();
+        });
+        image.addEventListener("error", () => showNotice("Foto tidak dapat dibuka. Silakan pilih gambar lain."));
+        image.src = reader.result;
+      });
+      reader.addEventListener("error", () => showNotice("Foto tidak dapat dibaca. Silakan coba lagi."));
+      reader.readAsDataURL(file);
+      event.target.value = "";
+    });
+    ["cropZoom", "cropHorizontal", "cropVertical"].forEach(id => {
+      document.getElementById(id).addEventListener("input", drawCropPreview);
+    });
+    document.getElementById("saveCrop").addEventListener("click", () => {
+      if (!pendingPhoto) return;
+      const canvas = document.getElementById("cropCanvas");
+      let photo;
+      try {
+        photo = canvas.toDataURL("image/jpeg", 0.9);
+      } catch (error) {
+        console.error("Foto yang disesuaikan tidak dapat dibuat:", error);
+        showNotice("Foto tidak dapat diproses. Silakan coba gambar lain.");
+        return;
+      }
+      const previousPhoto = profile.photo;
+      profile.photo = photo;
+      if (saveProfile()) {
+        renderProfile();
+        closeCropEditor();
+        showNotice("Foto profil berhasil diperbarui.");
+      } else {
+        profile.photo = previousPhoto;
+      }
+    });
+    document.getElementById("closeCrop").addEventListener("click", closeCropEditor);
+    document.getElementById("cancelCrop").addEventListener("click", closeCropEditor);
+    document.getElementById("cropBackdrop").addEventListener("click", event => {
+      if (event.target.id === "cropBackdrop") closeCropEditor();
+    });
+    document.getElementById("profileForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      fields[activeSection].forEach(([key]) => {
+        profile[key] = String(formData.get(key) || "").trim();
+      });
+      if (saveProfile()) {
+        renderProfile();
+        closeEditor();
+        showNotice("Profil berhasil disimpan.");
+      }
+    });
+    document.getElementById("closeModal").addEventListener("click", closeEditor);
+    document.getElementById("cancelModal").addEventListener("click", closeEditor);
+    document.getElementById("modalBackdrop").addEventListener("click", event => {
+      if (event.target.id === "modalBackdrop") closeEditor();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeCropEditor();
+        closeEditor();
+      }
+    });
+    renderProfile();
+  </script>
+</body>
+</html>
